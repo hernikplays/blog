@@ -13,7 +13,7 @@ Hodí se pro lidi, kteří nechtějí tahat např. do školy nebo do práce, kde
 Parametry
 
 V betě je možné testovat pouze výchozí možnost 4 jádra + 8GB RAM + 32GB úložiště, což definitivně stačí pro osobní a malé projekty. Do konce bety neplatíte nic, ale 4 jádra vyjdou na $0.36 (asi 8,3 kč) za hodinu, tj za hodinu aktivního používání. Codespace se vám automaticky vypne, pokud není po stanovenou dobu nepoužíván, takže můžete předejít placení katastrofických částek.
-![Ceny Codespaces]("/assets/images/codespaces/1.jpg")
+![Ceny Codespaces](/assets/images/codespaces/1.jpg)
 
 Je to určitě výhodnější, než si platit např. hotové VPS, pokud ho tedy nepoužíváte i na něco smysluplnějšího.
 Moje zkušenost
@@ -27,7 +27,7 @@ Ve výchozím stavu běží server na Ubuntu. Pokud nenajdete docker obraz nebo 
 Instalace všeho však probíhá svižně, jelikož asi v Microsoftu mají na rychlejší internet, než já. Samozřejmě vše musíte instalovat skrze terminál (což mě celkem ranilo, jelikož instalovat Android SDK pro flutter byla celkem fuška).
 
 Pokud používáte Settings Sync ve VS Code, automaticky se vám synchronizují nastavení a rozšíření. Pro pokročilé upravení prostředí slouží konfigurační soubor devcontainer.json
-![Ceny Codespaces]("/assets/images/codespaces/2.jpg")
+![Ceny Codespaces](/assets/images/codespaces/2.jpg)
 
 Jakmile máte všechno nastavené, už stačí jen využít starého známého Visual Studio Code, které funguje úplně stejně jako na lokálním zařízení. Na Codespace se můžete kdykoli připojit přes webovou adresu.
 
