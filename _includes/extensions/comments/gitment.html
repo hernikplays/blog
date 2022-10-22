@@ -1,15 +1,19 @@
-  <div id="gitment_thread"></div>
+  <div id="gitment_thread" class="giscus"></div>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css"/>
   <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
-  <script>
-    var gitment = new Gitment({
-      id: '{{ page.id }}',
-      owner: '{{ site.gitment.username }}',
-      repo: '{{ site.gitment.repo }}',
-      oauth: {
-        client_id: '{{ site.gitment.client_id }}',
-        client_secret: '{{ site.gitment.client_secret }}',
-      },
-    });
-    gitment.render('gitment_thread')
-  </script>
+  <script src="https://giscus.app/client.js"
+        data-repo="hernikplays/blog"
+        data-repo-id="R_kgDOHr2B6w"
+        data-category="General"
+        data-category-id="DIC_kwDOHr2B684CSIhA"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
