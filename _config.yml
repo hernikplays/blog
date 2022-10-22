@@ -25,7 +25,7 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Hernikuv Blog
-email: contact@hernikplays.cz
+email: matyas@caras.cafe
 author: hernikplays
 
 # Copyright setting
@@ -40,14 +40,14 @@ author: hernikplays
 #   "Copyright (c) 2017-{currentYear} <a href="https://example.com">{author}</a>"
 #   "Copyright © 2017-2021 Foobar"
 #
-copyright: "Copyright 2021-{currentYear} {author}"
+copyright: "Copyright (c) 2021-{currentYear} {author}"
 
 description: >- # this means to ignore newlines until "baseurl:"
   Blog plný mých názorů, keců, blábolů a blbostí ohledně světa techniky a obecně
   toho, čemu se zrovna rozhodnu věnovat
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://blog.hernikplays.cz" # the base hostname & protocol for your site, e.g. https://example.com
+url: "https://blog.caras.cafe" # the base hostname & protocol for your site, e.g. https://example.com
 favicon: "" # the favicon for your site
 
 # Yat date format
