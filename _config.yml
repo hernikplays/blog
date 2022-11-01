@@ -24,7 +24,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Hernikuv Blog
+title: Matyáš Caras
 email: matyas@caras.cafe
 author: hernikplays
 
@@ -43,11 +43,10 @@ author: hernikplays
 copyright: "Copyright (c) 2021-{currentYear} {author}"
 
 description: >- # this means to ignore newlines until "baseurl:"
-  Blog plný mých názorů, keců, blábolů a blbostí ohledně světa techniky a obecně
-  toho, čemu se zrovna rozhodnu věnovat
+  Welcome to my website/blog, full of weird stuff written by yours truly.
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://blog.caras.cafe" # the base hostname & protocol for your site, e.g. https://example.com
+url: "https://caras.cafe" # the base hostname & protocol for your site, e.g. https://example.com
 favicon: "" # the favicon for your site
 
 # Yat date format
