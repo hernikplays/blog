@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.1">Jekyll</generator><link href="https://caras.cafe/feed.xml" rel="self" type="application/atom+xml" /><link href="https://caras.cafe/" rel="alternate" type="text/html" /><updated>2022-11-05T11:35:48+00:00</updated><id>https://caras.cafe/feed.xml</id><title type="html">Matyáš Caras</title><subtitle>Welcome to my website/blog, full of weird stuff written by yours truly.</subtitle><author><name>hernikplays</name></author><entry><title type="html">Instalujeme Arch Linux ARM na Raspberry Pi 3</title><link href="https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html" rel="alternate" type="text/html" title="Instalujeme Arch Linux ARM na Raspberry Pi 3" /><published>2022-10-22T00:00:00+00:00</published><updated>2022-10-22T00:00:00+00:00</updated><id>https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch</id><content type="html" xml:base="https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html"><![CDATA[<p><img src="https://archlinuxarm.org/public/images/alarm.png" alt="Arch Linux ARM logo" /></p>
+
+<p>Raspbian OS už je ohraný. Pojďme si nainstalovat <a href="https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3">ARM verzi Arch Linuxu</a> na Raspberry Pi 3. Proces je relativně prostý.</p>
+
+<h1 id="připravujeme-sd-kartu">Připravujeme SD kartu</h1>
+<p>Nejdřív je nutné SD kartu naformátovat a rozdělit oddíly. Můžete to udělat svým oblíbeným způsobem, já použiji GUI nástroj GParted.</p>
+
+<p>Odstraníme všechny oddíly skrz kontextové menu pravého kliknutí a potvrzení fajfkou.</p>
+
+<p><img src="/assets/images/rpi-arch/01.png" alt="Odstraněné oddíly v GParted" /></p>
+
+<p>Následně vytvoříme jeden FAT32 oddíl, který bude sloužit jako bootovací. Bude stačit 128 MiB.</p>
+
+<p><img src="/assets/images/rpi-arch/02.png" alt="Vytváření FAT32 oddílu v GParted" /></p>
+
+<p>Druhý oddíl bude náš systémový, který bude ext4.</p>
+
+<p><img src="/assets/images/rpi-arch/03.png" alt="Vytváření ext4 oddílu v GParted" /></p>
+
+<p>Jakmile fajfkou potvrdíme a necháme oddíly vytvořit, můžete je ještě zformátovat, nicméně je nejdůležitější nastavit <code class="language-plaintext highlighter-rouge">boot</code> příznak na našem boot oddílu skrz kontextové menu.</p>
+
+<p><img src="/assets/images/rpi-arch/04.png" alt="Výběr příznaků v GParted" /></p>
+
+<p>Tak je všechno hotovo v GParted.</p>
+
+<h1 id="přesouváme-systém">Přesouváme systém</h1>
+<p>Dále připojíme naše oddíly podle jejich identifikátoru a čísla připojíme.</p>
+
+<p>Nejdřív si vytvoříme složky, <code class="language-plaintext highlighter-rouge">sudo mkdir -p /mnt/archpi/{root,boot}</code> nám vytvoří složky <code class="language-plaintext highlighter-rouge">root</code> a <code class="language-plaintext highlighter-rouge">boot</code> pro naše oddíly.</p>
+
+<p>Dále příkazem <code class="language-plaintext highlighter-rouge">sudo mount /dev/sdc1 /mnt/archpi/root</code> připojíme náš FAT32 bootovácí oddíl (<strong>Označení <code class="language-plaintext highlighter-rouge">sdc1</code> se u vás může lišit, podívejte se do GPartedu nebo skrz příkaz <code class="language-plaintext highlighter-rouge">lsblk</code> na označení jednotlivých oddílů</strong>) a příkazem <code class="language-plaintext highlighter-rouge">sudo mount /dev/sdc2 /mnt/archpi/boot</code> připojíme systémový oddíl.</p>
+
+<p>Dle oficiální <a href="https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3">dokumentace</a> se další proces má dělat skrz root uživatele, takže se přepneme příkazem <code class="language-plaintext highlighter-rouge">sudo su</code>.</p>
+
+<p>Příkazem <code class="language-plaintext highlighter-rouge">wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-armv7-latest.tar.gz</code> stáhneme archiv a příkazem <code class="language-plaintext highlighter-rouge">tar -xf ArchLinuxARM-rpi-armv7-latest.tar.gz -C /mnt/archpi/root</code> ho rozbalíme.</p>
+
+<p>Pak musíme přesunout bootovací soubory do bootovacího oddílu: <code class="language-plaintext highlighter-rouge">mv /mnt/archpi/root/boot/* boot</code> a tím jsme hotovi, stačí oddíly odpojit příkazem <code class="language-plaintext highlighter-rouge">umount /mnt/archpi/root</code> a <code class="language-plaintext highlighter-rouge">umount /mnt/archpi/boot</code>. Jakmile se příkazy dokončí, můžete SD kartu vložit do RPi a zapnout.</p>
+
+<p>Výchozí jméno a zároveň heslo uživatele je <code class="language-plaintext highlighter-rouge">alarm</code> a roota <code class="language-plaintext highlighter-rouge">root</code>. Než bude systém nastavený, doporučuji použít <code class="language-plaintext highlighter-rouge">root</code> účet.</p>
+
+<h1 id="připojení-k-wi-fi-síti">Připojení k Wi-Fi síti</h1>
+<p><em>Pokud používáte kabelové připojení, tak můžete přeskočit</em>
+Nyní se připojíme skrz terminál k Wi-Fi síti. Předpokládám, že název (SSID) sítě a heslo znáte a že zabezpečení je WPA2 Personal. Jinak si můžete prohlédnout <a href="https://wiki.archlinux.org/title/Network_configuration/Wireless">Arch Wiki</a> pro více návodů.</p>
+
+<p>Příkazem <code class="language-plaintext highlighter-rouge">iw dev</code> zjistíte název vašeho interfacu (např. já mám <code class="language-plaintext highlighter-rouge">wlan0</code>). Zapneme ho pomocí <code class="language-plaintext highlighter-rouge">ip link wlan0 up</code> (místo <code class="language-plaintext highlighter-rouge">wlan0</code> tedy použijte váš název interfacu).</p>
+
+<p>Dále se tedy připojíme k nějaké Wi-Fi síti. Nejdřív musíme vytvořit konfigurační soubor pro <code class="language-plaintext highlighter-rouge">wpa_supplicant</code>, který slouží jako <a href="https://cs.wikipedia.org/wiki/Suplikant">suplikant</a> s podporou WPA, WPA2 a WPA3.</p>
+
+<p>Pomocí příkazu <code class="language-plaintext highlighter-rouge">nano /etc/wpa_supplicant/wpa_supplicant.conf</code> vstoupíme do editace konfiguračního souboru. Do něj vložíme následující dva řádky:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ctrl_interface=/run/wpa_supplicant
+update_config=1
+</code></pre></div></div>
+
+<p>Klávesovou zkratkou <code class="language-plaintext highlighter-rouge">Ctrl+X</code>, zadáním <code class="language-plaintext highlighter-rouge">y</code> a potvrzením enterem uložíme soubor a opustíme editaci. wpa_supplicant teď můžeme spustit příkazem <code class="language-plaintext highlighter-rouge">wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf</code>.</p>
+
+<p>S běžícím wpa_supplicant můžeme použít příkaz <code class="language-plaintext highlighter-rouge">wpa_cli</code>, kde můžeme konfigurovat síť.</p>
+
+<p>Sítě zde můžete hledat příkazem <a href="https://wiki.archlinux.org/title/Wpa_supplicant#Connecting_with_wpa_cli"><code class="language-plaintext highlighter-rouge">scan</code></a>, následováný <code class="language-plaintext highlighter-rouge">scan_results</code>.</p>
+
+<p>Pro přidání sítě použijeme příkaz <code class="language-plaintext highlighter-rouge">add_network</code>. Terminál vrátí <code class="language-plaintext highlighter-rouge">0</code>, což je ID sítě, které můžeme konfigurovat. Příkazem <code class="language-plaintext highlighter-rouge">set_network 0 ssid "MYSSID"</code> nastavíme SSID (název) sítě na <code class="language-plaintext highlighter-rouge">MYSSID</code>. Příkazem <code class="language-plaintext highlighter-rouge">set_network 0 psk "passphrase"</code> nastavíme heslo na <code class="language-plaintext highlighter-rouge">passphrase</code>. Jakmile je nastaveno, můžeme povolit síť pomocí <code class="language-plaintext highlighter-rouge">enable_network 0</code>. Konfiguraci uložíme příkazem <code class="language-plaintext highlighter-rouge">save_config</code> a opustíme pomocí <code class="language-plaintext highlighter-rouge">quit</code>.</p>
+
+<p>Jelikož ale právě teď nemáme IP adresu, musíme nastavit službu DHCP (pokud ji samozřejmě váš router má). Stačí zapnout službu <code class="language-plaintext highlighter-rouge">dhcpcd</code> pomocí příkazu <code class="language-plaintext highlighter-rouge">systemctl enable dhcpcd</code>. Abychom při každém zapnutí nemuseli síť manuálně zapínat, můžeme do <code class="language-plaintext highlighter-rouge">dhcpcd</code> přidat <a href="https://wiki.archlinux.org/title/Dhcpcd#10-wpa_supplicant">hook</a>, který ji automaticky zapne, stačí použít <code class="language-plaintext highlighter-rouge">ln -s /usr/share/dhcpcd/hooks/10-wpa_supplicant /usr/lib/dhcpcd/dhcpcd-hooks/</code>.</p>
+
+<p>V tomto stádiu doporučuji restartovat příkazem <code class="language-plaintext highlighter-rouge">reboot</code>.</p>
+
+<h1 id="nastavujeme-správce-balíků">Nastavujeme správce balíků</h1>
+<p>Aktuálně bychom měli mít funkční síť, nicméně je potřeba pár dalších příkazů pokud chceme používat <code class="language-plaintext highlighter-rouge">pacman</code> správce balíků.</p>
+
+<p>Nejdřív musíme vytvořit klíčenku příkazem <code class="language-plaintext highlighter-rouge">pacman-key --init</code>, poté přidáme klíče Arch ARM repozitářů příkazem <code class="language-plaintext highlighter-rouge">pacman-key --populate archlinuxarm</code>. Teď můžete příkazem <code class="language-plaintext highlighter-rouge">pacman -Sy</code> repozitáře synchronizovat.</p>
+
+<p>Jako první balík bychom měli stáhnout <a href="https://wiki.archlinux.org/title/sudo"><code class="language-plaintext highlighter-rouge">sudo</code></a>, abychom nemuseli používat <code class="language-plaintext highlighter-rouge">root</code> uživatele pro všechno nastavování. Nainstalujeme ho příkazem <code class="language-plaintext highlighter-rouge">pacman -S sudo</code>. Dále příkazem <code class="language-plaintext highlighter-rouge">nano /etc/sudoers</code> upravíme konfiguraci. Najdeme následující řádky (<code class="language-plaintext highlighter-rouge">Ctrl+W</code> pro hledání):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Uncomment to allow members of group wheel to execute any command
+#%wheel ALL=(ALL:ALL) ALL
+</code></pre></div></div>
+<p>a odstraníme mřížku před <code class="language-plaintext highlighter-rouge">%</code> pro odstranění komentáře. Tím umožníme uživatelům v uživatelské skupině <code class="language-plaintext highlighter-rouge">wheel</code> používat příkaz <code class="language-plaintext highlighter-rouge">sudo</code>.</p>
+
+<p>Nyní přidáme uživatele <code class="language-plaintext highlighter-rouge">alarm</code> do skupiny <code class="language-plaintext highlighter-rouge">wheel</code> příkazem <code class="language-plaintext highlighter-rouge">gpasswd -a alarm wheel</code>. A teď už můžeme používat uživatele <code class="language-plaintext highlighter-rouge">alarm</code> pro různé administrativní operace místo roota.</p>
+
+<h1 id="nastavení-ssh-přístupu">Nastavení SSH přístupu</h1>
+<p>Možná vás nebaví zapojovat RPi do monitoru nebo u něj klapat věci do klávesnice v terminálu nebo jen chcete vzdálený přístup. SSH lze povolit skrz OpenSSH, které je na Archu předinstalované. Stačí povolit službu pomocí <code class="language-plaintext highlighter-rouge">systemctl enable sshd</code>. Pro nějakou pokročilou konfiguraci si prohlédněte <a href="https://wiki.archlinux.org/title/OpenSSH#Server_usage">Arch Wiki</a>.</p>
+
+<p>Nyní se stačí připojit skrz nějaký SSH klient na vaše zařízení (pokud neznáte IP, podívejte se skrz příkaz <code class="language-plaintext highlighter-rouge">ip a</code>), třeba skrz <code class="language-plaintext highlighter-rouge">ssh alarm@vase.ip.adresa</code>.</p>
+
+<h1 id="https-problémy">HTTPS problémy</h1>
+<p>Pokud máte problémy s SSL nebo komunikací se zabezpečenými servery, zkuste nainstalovat balík <code class="language-plaintext highlighter-rouge">ca-certificates</code> a nastavit systémový čas skrz <code class="language-plaintext highlighter-rouge">timedatectl set-time "2022-10-29 15:00:00</code> (samozřejmě vaše datum).</p>
+
+<h1 id="závěr">Závěr</h1>
+
+<p><img src="/assets/images/rpi-arch/05.png" alt="Arch neofetch" /></p>
+
+<p>Instalace je opravdu prostý a snadný proces (i když jsem ho sám dělal asi 5x než mi to nabootovalo), takže určitě zkoušejte a zkoušejte.</p>]]></content><author><name>hernikplays</name></author><category term="tutoriál" /><category term="návod" /><category term="rpi" /><category term="arch" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">NordVPN - Jste opravdu v takovém nebezpečí?</title><link href="https://caras.cafe/bezpe%C4%8D%C3%AD/2022/07/19/nordvpn.html" rel="alternate" type="text/html" title="NordVPN - Jste opravdu v takovém nebezpečí?" /><published>2022-07-19T00:00:00+00:00</published><updated>2022-07-19T00:00:00+00:00</updated><id>https://caras.cafe/bezpe%C4%8D%C3%AD/2022/07/19/nordvpn</id><content type="html" xml:base="https://caras.cafe/bezpe%C4%8D%C3%AD/2022/07/19/nordvpn.html"><![CDATA[<p>Pokud sledujete YouTube, určite jste už narazili na nespočet videí, které sponzoruje nějaký poskytovatel tzv. <strong>VPN</strong>. Většinou se dozvíte něco jako „vaše data jsou v nebezpečí“ a/nebo „použijte naše služby pro zabezpečení vašich dat před hackery“. Toto se samozřejmě netýká <em>jen</em> NordVPN, ale myslím, že ti mají tu nejagresivnější marketingovou strategii snad ze všech.</p>
+<h1 id="část-i-kecy">ČÁST I: Kecy</h1>
+<h2 id="kdo-stojí-za-nordvpn">Kdo stojí za NordVPN</h2>
+<p>NordVPN vzniklo v roce 2012 jako produkt Toma Okmana, Eimantase Sabaliauskase a Jonase Karklyse. Služba má sloužit jako tzv. <strong>Virtual Private Network</strong> neboli virtuální soukromá síť. Můžete se tak skrze NordVPN servery připojovat na internet třeba z Německa. Dle zvoleného protokolu je síťový provoz šifrován. NordVPN vlastní společnost <a href="https://nordsecurity.com/">Nord Security</a>, která zastřešuje i ostatní produkty značky Nord. Sídlo má ve Velké Británii. Nord Security kromě VPN nabízí i vlastního správce hesel a šifrovaný cloud.</p>
+
+<h2 id="nordvpn-a-reklamy-youtuberů">NordVPN a reklamy YouTuberů</h2>
+<p>Reklamy uvnitř obsahu, tedy reklamy, které tvůrce přidává přímo do videa výměnou za přímou platbu od společnosti, jsou tu s námi celkem dlouho. Jsou <strong>efektivnější</strong> než běžné reklamy, protože je s běžným blokovačem reklam nepřeskočíte a často je tvůrci tvoří zábavným způsobem, aby je sledující sám nepřeskočil. Je to <strong>stabilnější příjem</strong> pro tvůrce obsahu, jelikož se nemusí spoléhat na výdělek z reklam, které YouTube často omezuje svými pravidli demonetizace. To je také jeden z důvodů, proč často youtubeři těmto druhům reklam vyjdou vstříc, i když nemusí mít o daném produktu žádnou znalost. Často tak ve svých videích poskytují nepravdivé či přímo zavádějící tvrzení. Než uvedu příklady, je nutné si uvědomit, že <strong>ne každý takový YouTuber poskytuje zavádějící informace</strong> nebo že <strong>NordVPN nejsou žádní podvodníci</strong>. Nejsem žádný „samozvaný IT expert“, takže mě neváhejte případně opravit. A o tvrzení „NordVPN je nejlepší VPN“ se bavit ani nebudu, o tom si udělejte obrázek sami.</p>
+
+<h3 id="tvrzení-č-1">Tvrzení č. 1:</h3>
+<p><strong><a href="https://youtu.be/51TNTCAD8fQ?t=68">Veřejné WiFi jsou nebezpečné a kdokoliv může sledovat, co na nich děláte</a></strong></p>
+
+<p>Zalíbila se mi <a href="https://www.quora.com/Is-it-safe-to-use-internet-from-open-public-WiFi-hotspots/answer/Scott-Helms-8">odpověď Scotta Helmse</a>, který přirovnává veřejné WiFi sítě k veřejným ulicím. Pokud budete dělat hlouposti, jako je chození s přilepenou platební kartou na čele, samozřejmě vaše údaje budou odcizeny. Proto určitě není dobrý nápad dělat nákupy či se přihlašovat do bankovnictví skrz veřejné sítě. Když se na to podíváme realisticky, je relativně malá šance, že si zrovna k vám v mekáči sedl chlapec či dívka s laptopem, na kterém projíždí vaši historii vyhledávání. Navíc většina webů je zabezpečená pomocí SSL, takže přenos dat je šifrovaný. Takže při používání VPN to vlastně šifrujete ještě jednou (?), což už ale tak užitečné není. Jak <a href="https://www.eff.org/deeplinks/2020/01/why-public-wi-fi-lot-safer-you-think">píše</a> EFF, tyto hrozby jsou díky HTTPS/SSL spíše minulostí. Váš poskytovatel internetu může sledovat např. jakou stránku otevíráte (třeba github.com), nicméně neuvidí žádné parametry, které odesíláte, ani jestli navštěvujete github.com/hernikplays nebo github.com/ytdl. A to stejné mohou lidé, kteří jsou kolem vás připojení na veřejné WiFi. „V životě se bojíte spousty věcí, veřejné WiFi si můžete ze seznamu odškrtnout“.</p>
+
+<h3 id="tvrzení-č-2">Tvrzení č. 2:</h3>
+<p><strong><a href="https://youtu.be/a_LiGXtXXNQ?t=1642">[NordVPN poskytuje] maximální internetové bezpečí</a></strong></p>
+
+<p>Jak už jsem řekl v předchozí části, před vlastní blbostí vás ani to nejlepší VPN nezachrání. Pokud máte selský rozum, tak poznáte, kam zadávat a nezadávat svoje osobní údaje, což se s rostoucí popularitou sociálního inženýrství o něco zhoršuje. A pokud si vás přecijen nějaký špičkový, státem placený hacker najde, tak mu VPN určitě nebude dělat problém.</p>
+
+<h3 id="tvrzení-č-3">Tvrzení č. 3:</h3>
+<p><strong><a href="https://youtu.be/sB8vHDS1Tcg?t=380">Zatímco [bez VPN] ti může jakýkoliv útočník vcelku jednoduše tvé zařízení nabourat, s ním jsi prakticky neviditelný […] smaže za tebou tvou stopu</a></strong></p>
+
+<p>Toto tvrzení je možná pravdivé pro NordVPN, jelikož nabízejí službu „<a href="https://nordvpn.com/features/threat-protection/">Threat Protection</a>“, která slouží k blokování reklam, sledovacích prvků a nebezpečných webů, nicméně může vzbudit dojem, že takhle operuje každé VPN. Pokud vám jde o vaše bezpečí, neměli byste sázet na řešení jedním kliknutím, ale <a href="https://mullvad.net/en/help/first-steps-towards-online-privacy/">prozkoumat různé možnosti a nástroje</a>, včetně VPN. Pokud používáte např. služby od Googlu, už tak jim o sobě poskytujete dostatek údajů. 
+Útočník také nemůže „vcelku jednoduše“ vaše zařízení nabourat, to lze pouze pokud jste se rozhodli používat Windows 10 a nenainstalovali jste žádné aktualizace. V tom případě je váš systém děravý jak ementál a to už asi nikdo, kromě vás, nespraví. Takže aktualizujte svůj systém a aplikace jak to jen půjde!</p>
+
+<h3 id="tvrzení-č-4">Tvrzení č. 4:</h3>
+<p><strong>Můžeš sledovat obsah uzamknutý pro určité země</strong></p>
+
+<p>To je samozřejmě pravda, nicméně některé služby se aktivně pokouší zamezit přístup uživatelům s VPN identifikováním IP adresy daného VPN serveru.</p>
+
+<h3 id="tvrzení-č-5">Tvrzení č. 5:</h3>
+<p><strong><a href="https://youtu.be/sB8vHDS1Tcg?t=436">[NordVPN] ti zrychlí internet</a></strong></p>
+
+<p>Když máte od poskytovatele internetu omezené stahování na 10 MB/s, nemůžete očekávat, že když budete ze serveru, kde může být zároveň napojeno X tisíc lidí a je někde v tramtárii, stahovat soubor, že se bude stahovat rychleji. <a href="https://www.cloudflare.com/learning/access-management/vpn-speed/">Pouze ve specifických případech</a>, kdy například poskytovatel internetu záměrně zpomaluje připojení např. k Netflixu, můžete pocítit zrychlení.</p>
+
+<h2 id="nordvpn-a-ještě-divnější-praktiky">NordVPN a ještě divnější praktiky</h2>
+<p>Zavádějícími tvrzeními to však nekončí, věděli jste, že na mnoha webech s hodnoceními VPN služeb si můžete určitou pozici <strong>jednoduše koupit</strong>? Ano, dostáváme se do takzvaného <strong>provizního systému</strong>, tedy systému, ve kterém firma proplatí provizi z provedeného nákupu jistému zprostředkovateli. Vtipná věc je, že některé tyto firmy <a href="https://blog.windscribe.com/consolidation-of-the-vpn-industry-spells-trouble-for-the-consumer-57e638634cf0/">vlastní</a> zároveň takovéto <em>„publikace“</em> a samotné VPN služby, jako např. Kape Technologies, která se původně <strong>zabývala adwarem</strong>, nyní vlastní např. ExpressVPN a zároveň web VPNmentor. NordVPN není výjimkou s jejich provizním systémem nabízejícím až 40% část z ceny nákupu.  Dá se těmto „hodnocením“ vůbec věřit? Některým nejspíš ano, je dobré však zkontrolovat, jestli publikaci nevlastní nějaká mediální společnost.</p>
+
+<p>Dále můžeme na webu NordVPN, služby, která vám má pomoct chránit vaše soukromí a <em>„zneviditelnit se“</em>, <strong>najít spoustu sledovacích prvků</strong>, jako např. sledovací prvky Twitter Ads, Google Ads, Analytics a Bing.</p>
+
+<p><img src="/assets/images/vpn/14.png" alt="Ukázka sledovacích prvků na stránce NordVPN" /></p>
+
+<h1 id="část-ii-vzhůru-dolů">Část II: Vzhůru dolů</h1>
+<p>Ano, je čas, abych se vydal do králičí nory a NordVPN otestoval. Hned na úvodní stránce na vás vyskočí tuny slev. „Nakupte do X hodin a získejte slevu X%“. No tak to abych si pohnul, co? Samozřejmě, že ne. Úplně stejná stránka s úplně stejným odpočtem se mi zobrazila i včera. Navíc tato sleva platí jen na roční plány a já s NordVPN chci strávit co nejméně času. Takže beru jejich standardních 10,49 eur na měsíc, které naštěstí také nabízejí s garancí vrácení peněz. Samozřejmě k tomu ještě musíte přičíst daně, z čehož máme 12,69 <em>(nice)</em>. Použil jsem jejich <a href="https://www.theregister.com/2020/03/06/nordvpn_no_auth_needed_view_user_payments/">(ne)</a>bezpečnou bránu a vzdal se svých těžce vydělaných peněz.
+Jejich stránka, ze které jsem měl stáhnout klienta, se chvástala „online zabezpečením pro všechny velké linuxové distribuce“, takže je super, že nabízejí stažení pouze pro distribuce založené na Debianu a RHEL, když jsem na Archu. Samozřejmě nic, co by Arch komunita nevyřešila.</p>
+
+<p>Nemůžu hodnotit jednoduchost prostředí, protože <em>to na linuxu ani není</em>. Nicméně se podíváme na rychlost.</p>
+<h2 id="rychlosti-velmi-stručně">Rychlosti (velmi stručně)</h2>
+<p><img src="/assets/images/vpn/13.png" alt="Výchozí rychlost (bez VPN, WiFi)" /></p>
+
+<p>Výchozí rychlost (bez VPN, WiFi)</p>
+
+<p><img src="/assets/images/vpn/12.png" alt="NordVPN Germany #1078" /></p>
+
+<p>NordVPN Germany #1078</p>
+
+<p><img src="/assets/images/vpn/11.png" alt="Rychlost stahování torrentů na serverech v Německu" /></p>
+
+<p>Pokles rychlosti, úplně normální, protože pakety urazí větší vzdálenost. Streamování YouTube ve Full HD má pocititelné zpomalení/zasekávání. Rychlosti stahování torrentů se držely v průměru mezi 600 a 700 KB/s.</p>
+
+<p><img src="/assets/images/vpn/10.png" alt="NordVPN USA #9363" /></p>
+
+<p>NordVPN USA #9363</p>
+
+<p><img src="/assets/images/vpn/9.png" alt="Rychlost stahování torrentů na serverech v USA" /></p>
+
+<p>Tady už změnu pocítíte víc. Zajímavé však je, že se videa z YouTube ve Full HD načítají rychleji. Nicméně rychlosti stahování torrentů skákaly nahorů a dolů.</p>
+
+<h2 id="threat-protection-lite">Threat Protection Lite</h2>
+<p>Další funkce dostupná pro linux je <a href="https://support.nordvpn.com/General-info/Features/1047407402/What-are-Threat-Protection-and-Threat-Protection-Lite.htm">TPL</a>, který má blokovat reklamy, nebezpečné stránky a pochybná připojení během připojení na VPN.</p>
+
+<p>Na webu NordVPN zablokoval sledovací prvky Twitteru, Bingu a Googlu, nicméně vynechal Google Analytics (což je asi pochopitelné, když o blokování sledujících prvků není ani zmínka).</p>
+
+<p><img src="/assets/images/vpn/8.png" alt="Zablokované sledovací prvky na NordVPN.com" /></p>
+
+<p>Na YouTube neblokuje reklamy vůbec,
+<img src="/assets/images/vpn/7.png" alt="Blokování reklam s TPL na YouTube" /></p>
+
+<p>ale na jiných webech ano.
+<img src="/assets/images/vpn/6.png" alt="Blokování reklam s TPL na jiných webech" /></p>
+
+<p>Takže nahradí blokovače jako <a href="https://github.com/gorhill/uBlock#readme">uBlock Origin</a>? Řekl bych, že ne.</p>
+<h1 id="část-iii-opouštíme-králičí-noru">Část III: Opouštíme králičí noru</h1>
+<p>Dobře, mám trochu NordVPN na vlastní kůži, ale teď se ho chci zbavit. Takže jdeme žádat zpět peníze.
+Zrušení obnovení předplatného bylo relativně snadné, v nastavení účtu stačilo kliknout na „Zrušit“.</p>
+
+<p><img src="/assets/images/vpn/5.png" alt="Zrušení obnovení předplatného" /></p>
+
+<p>Teď přijde ta bolestivější část, a to žádání o vrácení peněz. Dle podmínek máte 30 dní od prvního nákupu nárok na vrácení peněz.
+NordVPN říká, že podpora funguje 24/7. Na začátku jste spojeni s robotem, který vás postupně přepojí na živého člověka.</p>
+
+<p><img src="/assets/images/vpn/4.png" alt="Robot na podpoře" /></p>
+
+<p>Člověk se skutečně objevil.</p>
+
+<p><img src="/assets/images/vpn/3.png" alt="Chat s podporu část 1" /></p>
+
+<p>Chvilku mu to trvalo, takže jsem ho popostrčil.</p>
+
+<p><img src="/assets/images/vpn/2.png" alt="Chat s podporu část 2" /></p>
+
+<p>Řekl jsem mu slušně „Ne, díky“, po čemž mi nastavil vrácení peněz.</p>
+
+<p><img src="/assets/images/vpn/1.png" alt="Chat s podporu část 3" /></p>
+
+<p>Celkem rychle vyřízeno, dobrá práce. Zvláštní mi přišlo jen, že si mě nijak neověřil, pouze jsem na začátku poskytl e-mail, z čehož (doufám) vydedukoval, že to patří k mému účtu.
+Další den mi skutečně odebrali přístup k jejich službě, nicméně peníze jsou stále zablokované, tak snad si banka pohne.</p>
+
+<h1 id="část-v-závěr">Část V: Závěr</h1>
+<p>Takže na závěr:
+<strong>Je VPN úplně zbytečný nástroj?</strong> Určitě ne.</p>
+
+<p><strong>Můžou youtubeři za to, že někdy neříkají pravdivé věci?</strong> Spíš ne, nemůžete čekat každého youtubera, že je expert přes sítě, jenom se snaží se uživit a vyloženě lži říkají opravdu málokdy.</p>
+
+<p><strong>Snaží se NordVPN prodat hadí olej a moje děti na darknetu?</strong> Nejspíš ne, ale měli by víc sjednotit prezentování co se týče sponzorování youtuberů.</p>
+
+<p><strong>Můžu důvěřovat NordVPN?</strong> S jejich velikostí nejspíš ano.</p>
+
+<p><strong>Doporučil bych NordVPN?</strong> Ne. Pokud chcete opravdu 100% anonymitu a hlavně no-bullshit produkt, použijte něco jako Mullvad <em>(toto není sponzorováno, sám ho používám a je fajn)</em>, který nenabízí žádné posrané slevy kvůli všemu možnému a kde dokonce můžete platit v hotovosti, ale nezapomeňte, že VPNkem to nekončí. Podívejte se na <a href="https://ssd.eff.org/">Surveillance Self-Defense</a> od EFF pro více tipů na ochranu vašeho soukromí.</p>]]></content><author><name>hernikplays</name></author><category term="bezpečí" /><category term="vpn" /><category term="youtube" /><category term="reklamy" /><summary type="html"><![CDATA[Pokud sledujete YouTube, určite jste už narazili na nespočet videí, které sponzoruje nějaký poskytovatel tzv. VPN. Většinou se dozvíte něco jako „vaše data jsou v nebezpečí“ a/nebo „použijte naše služby pro zabezpečení vašich dat před hackery“. Toto se samozřejmě netýká jen NordVPN, ale myslím, že ti mají tu nejagresivnější marketingovou strategii snad ze všech. ČÁST I: Kecy Kdo stojí za NordVPN NordVPN vzniklo v roce 2012 jako produkt Toma Okmana, Eimantase Sabaliauskase a Jonase Karklyse. Služba má sloužit jako tzv. Virtual Private Network neboli virtuální soukromá síť. Můžete se tak skrze NordVPN servery připojovat na internet třeba z Německa. Dle zvoleného protokolu je síťový provoz šifrován. NordVPN vlastní společnost Nord Security, která zastřešuje i ostatní produkty značky Nord. Sídlo má ve Velké Británii. Nord Security kromě VPN nabízí i vlastního správce hesel a šifrovaný cloud.]]></summary></entry><entry><title type="html">GitHub Codespaces aneb VS Code na VPS</title><link href="https://caras.cafe/vychyt%C3%A1vky/2022/05/31/codespaces.html" rel="alternate" type="text/html" title="GitHub Codespaces aneb VS Code na VPS" /><published>2022-05-31T00:00:00+00:00</published><updated>2022-05-31T00:00:00+00:00</updated><id>https://caras.cafe/vychyt%C3%A1vky/2022/05/31/codespaces</id><content type="html" xml:base="https://caras.cafe/vychyt%C3%A1vky/2022/05/31/codespaces.html"><![CDATA[<p>Nedávno mi přišel e-mail, že jsem byl přidán do beta testování funkce Codespaces na GitHubu. Stručně, Codespaces má být systém ve kterém si vytvoříte vlastní prostředí pro váš repozitář, do kterého si nainstalujete všechny potřebné knihovny, SDK a balíky. Server, na kterém to všechno běží, si platíte u GitHubu a můžete na něj kdekoliv a kdykoliv přejít přes web do webové, narozdíl od výchozího webového VS Code plně vybavené, verzi VS Code nebo nainstalovaný VS Code a upravovat nebo testovat kód.</p>
+
+<p>Hodí se pro lidi, kteří nechtějí tahat např. do školy nebo do práce, kde nesmí instalovat externí aplikace, svůj vlastní notebook.
+Parametry</p>
+
+<p>V betě je možné testovat pouze výchozí možnost 4 jádra + 8GB RAM + 32GB úložiště, což definitivně stačí pro osobní a malé projekty. Do konce bety neplatíte nic, ale 4 jádra vyjdou na $0.36 (asi 8,3 kč) za hodinu, tj za hodinu aktivního používání. Codespace se vám automaticky vypne, pokud není po stanovenou dobu nepoužíván, takže můžete předejít placení katastrofických částek.
+<img src="/assets/images/codespaces/1.jpg" alt="Ceny Codespaces" /></p>
+
+<p>Je to určitě výhodnější, než si platit např. hotové VPS, pokud ho tedy nepoužíváte i na něco smysluplnějšího.
+Moje zkušenost</p>
+
+<p>Samozřejmě jsem nemohl odolat a na OpenCanteen jsem si jeden nechal vytvořit, aniž bych věděl do čeho se vrhám.</p>
+
+<p>Codespace se vytváří jednoduše kliknutím na tlačítko “Code” ve vašem repozitáří, kde se vám nově zobrazí možnost si Codespace vytvořit.</p>
+
+<p>Ve výchozím stavu běží server na Ubuntu. Pokud nenajdete docker obraz nebo devcontainer konfigurační soubor, musíte si samozřejmě vše nainstalovat sami, což zas tolik nevadí, protože to nejspíš budete dělat jen jednou, pokud si nebudete s obrazem stroje nějak zahrávat.</p>
+
+<p>Instalace všeho však probíhá svižně, jelikož asi v Microsoftu mají na rychlejší internet, než já. Samozřejmě vše musíte instalovat skrze terminál (což mě celkem ranilo, jelikož instalovat Android SDK pro flutter byla celkem fuška).</p>
+
+<p>Pokud používáte Settings Sync ve VS Code, automaticky se vám synchronizují nastavení a rozšíření. Pro pokročilé upravení prostředí slouží konfigurační soubor devcontainer.json
+<img src="/assets/images/codespaces/2.jpg" alt="Ceny Codespaces" /></p>
+
+<p>Jakmile máte všechno nastavené, už stačí jen využít starého známého Visual Studio Code, které funguje úplně stejně jako na lokálním zařízení. Na Codespace se můžete kdykoli připojit přes webovou adresu.</p>
+
+<p>Za mě velice praktické pro dříve uvedené typy lidí, už jen záleží, jestli se to zrovna vám za ty peníze vyplatí. Dokumentace je možná trochu chaotická, alespoň pro uživatele co se nevyznají v technologiích jako kontejnery či docker a většiny funkcí využije jen skutečný poweruser (což já určitě nejsem).</p>]]></content><author><name>hernikplays</name></author><category term="vychytávky" /><category term="github" /><category term="vps" /><summary type="html"><![CDATA[Nedávno mi přišel e-mail, že jsem byl přidán do beta testování funkce Codespaces na GitHubu. Stručně, Codespaces má být systém ve kterém si vytvoříte vlastní prostředí pro váš repozitář, do kterého si nainstalujete všechny potřebné knihovny, SDK a balíky. Server, na kterém to všechno běží, si platíte u GitHubu a můžete na něj kdekoliv a kdykoliv přejít přes web do webové, narozdíl od výchozího webového VS Code plně vybavené, verzi VS Code nebo nainstalovaný VS Code a upravovat nebo testovat kód.]]></summary></entry><entry><title type="html">Automatizace, automatizace, automatizace</title><link href="https://caras.cafe/programov%C3%A1n%C3%AD/2022/05/22/automatizace.html" rel="alternate" type="text/html" title="Automatizace, automatizace, automatizace" /><published>2022-05-22T00:00:00+00:00</published><updated>2022-05-22T00:00:00+00:00</updated><id>https://caras.cafe/programov%C3%A1n%C3%AD/2022/05/22/automatizace</id><content type="html" xml:base="https://caras.cafe/programov%C3%A1n%C3%AD/2022/05/22/automatizace.html"><![CDATA[<p>Roboti nám brzo vezmou práci, ale mně to (prozatím) nevadí. Já nechávám robůtky pracovat za mě a ulehčovat mi práci. A vy byste měli taky! Pokud teda programujete, jinak nevím.</p>
+
+<p>Nedávno jsem objevil krásy zvané GitHub Actions a musím říct, že je to opravdu radost. Nikdy předtím jsem nedokázal pochopit jejich praktičnost, než jsem pracoval na <a href="https://github.com/hernikplays/opencanteen">OpenCanteen</a>. Sestavovat, podepisovat a nahrávat mě opravdu nebavilo a ještě s mým pomalým PC v kombinaci s pomalým internetem to nešlo zrovna rychle. Pak jsem si vzpomněl na GitHub Actions. Místo toho, abych dělal cokoliv produktivního, jsem strávil celé odpoledne nastavováním Actions, aby mi při novém tagu automaticky sestavil a publikoval vydání aplikace do Google Play.</p>
+
+<p>Ta první část šla skvěle, avšak nahrávání do Google Play bylo o něco složitější, dokud jsem neobjevil hotové a, prozatím bezplatné, řešení <a href="https://codemagic.io/start/">CodeMagic</a>.</p>
+
+<p>Jednoduše jsem napojil repozitář, nastavil podepisovací a nahrávací údaje a všechno hned jelo! Byla to radost pro někoho tak líného jako jsem já. I přesto, že jsem sám reálně nic neudělal, cítil jsem, že jsem dosáhl něčeho úžasného.</p>
+
+<p>A určitě to lze dotáhnout ještě dál, už teď používám Actions pro automatickou analýzu kódu, a kdybych si vytvořil testy tak by mi to určitě i otestovalo celou aplikaci.</p>
+
+<p>Pak jsem si řekl, že by možná mohl někdo chtít do mé aplikace přispět svým kódem. Protože chci v tom mít pořádek, hned jsem začal projíždět GitHub Marketplace pro nějaké akce na pull requesty. Hned jsem jich několik objevil.</p>
+
+<p>Velice jsem ocenil akci, která mi automaticky přidala labely podle souboru, který byl v PR upraven.</p>
+
+<p>Určitě nepotřebujete nutně automatizovat všechno, pokud máte např. soukromý či malý projekt. Nicméně si to můžete aspoň otestovat a případně využít v budoucnu tak se do toho pusťte! Automatizovat můžete všechno možné. Určitě budete mít dobrý pocit, když se vaše akce spustí a úspěšně se dokončí.</p>]]></content><author><name>hernikplays</name></author><category term="programování" /><category term="automatizace" /><category term="technologie" /><summary type="html"><![CDATA[Roboti nám brzo vezmou práci, ale mně to (prozatím) nevadí. Já nechávám robůtky pracovat za mě a ulehčovat mi práci. A vy byste měli taky! Pokud teda programujete, jinak nevím.]]></summary></entry></feed>

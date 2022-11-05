@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Instalujeme Arch Linux ARM na Raspberry Pi 3 | Matyáš Caras</title>
+<meta name="generator" content="Jekyll v4.3.1">
+<meta property="og:title" content="Instalujeme Arch Linux ARM na Raspberry Pi 3">
+<meta name="author" content="hernikplays">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="Welcome to my website/blog, full of weird stuff written by yours truly.">
+<meta property="og:description" content="Welcome to my website/blog, full of weird stuff written by yours truly.">
+<link rel="canonical" href="https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html">
+<meta property="og:url" content="https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html">
+<meta property="og:site_name" content="Matyáš Caras">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2022-10-22T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="Instalujeme Arch Linux ARM na Raspberry Pi 3">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"hernikplays"},"dateModified":"2022-10-22T00:00:00+00:00","datePublished":"2022-10-22T00:00:00+00:00","description":"Welcome to my website/blog, full of weird stuff written by yours truly.","headline":"Instalujeme Arch Linux ARM na Raspberry Pi 3","mainEntityOfPage":{"@type":"WebPage","@id":"https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html"},"url":"https://caras.cafe/tutori%C3%A1l/2022/10/22/rpi-arch.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="https://caras.cafe/feed.xml" title="Matyáš Caras">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="Matyáš Caras" src="" onerror="this.style.display='none'">
+  Matyáš Caras
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/">HOME</a><a class="page-link" href="/tags.html">TAGS</a>
+
+
+
+
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<div id="click-to-top" class="click-to-top">
+  <i class="fa fa-arrow-up"></i>
+</div>
+<script>
+  (function () {
+    const clickToTop = document.getElementById('click-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        clickToTop.classList.add('show')
+      }else {
+        clickToTop.classList.remove('show')
+      }
+    });
+    clickToTop.addEventListener('click', () => {
+      window.smoothScrollTo(0);
+    });
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Instalujeme Arch Linux ARM na Raspberry Pi 3</h1>
+  <h2 class="post-subtitle">Protože proč ne</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2022-10-22T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Oct 22, 2022
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/tags.html#n%C3%A1vod">#návod</a><a class="post-tag" href="/tags.html#rpi">#rpi</a><a class="post-tag" href="/tags.html#arch">#arch</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p><img src="https://archlinuxarm.org/public/images/alarm.png" alt="Arch Linux ARM logo"></p>
+
+<p>Raspbian OS už je ohraný. Pojďme si nainstalovat <a href="https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3">ARM verzi Arch Linuxu</a> na Raspberry Pi 3. Proces je relativně prostý.</p>
+
+<h1 id="připravujeme-sd-kartu">Připravujeme SD kartu</h1>
+<p>Nejdřív je nutné SD kartu naformátovat a rozdělit oddíly. Můžete to udělat svým oblíbeným způsobem, já použiji GUI nástroj GParted.</p>
+
+<p>Odstraníme všechny oddíly skrz kontextové menu pravého kliknutí a potvrzení fajfkou.</p>
+
+<p><img src="/assets/images/rpi-arch/01.png" alt="Odstraněné oddíly v GParted"></p>
+
+<p>Následně vytvoříme jeden FAT32 oddíl, který bude sloužit jako bootovací. Bude stačit 128 MiB.</p>
+
+<p><img src="/assets/images/rpi-arch/02.png" alt="Vytváření FAT32 oddílu v GParted"></p>
+
+<p>Druhý oddíl bude náš systémový, který bude ext4.</p>
+
+<p><img src="/assets/images/rpi-arch/03.png" alt="Vytváření ext4 oddílu v GParted"></p>
+
+<p>Jakmile fajfkou potvrdíme a necháme oddíly vytvořit, můžete je ještě zformátovat, nicméně je nejdůležitější nastavit <code class="language-plaintext highlighter-rouge">boot</code> příznak na našem boot oddílu skrz kontextové menu.</p>
+
+<p><img src="/assets/images/rpi-arch/04.png" alt="Výběr příznaků v GParted"></p>
+
+<p>Tak je všechno hotovo v GParted.</p>
+
+<h1 id="přesouváme-systém">Přesouváme systém</h1>
+<p>Dále připojíme naše oddíly podle jejich identifikátoru a čísla připojíme.</p>
+
+<p>Nejdřív si vytvoříme složky, <code class="language-plaintext highlighter-rouge">sudo mkdir -p /mnt/archpi/{root,boot}</code> nám vytvoří složky <code class="language-plaintext highlighter-rouge">root</code> a <code class="language-plaintext highlighter-rouge">boot</code> pro naše oddíly.</p>
+
+<p>Dále příkazem <code class="language-plaintext highlighter-rouge">sudo mount /dev/sdc1 /mnt/archpi/root</code> připojíme náš FAT32 bootovácí oddíl (<strong>Označení <code class="language-plaintext highlighter-rouge">sdc1</code> se u vás může lišit, podívejte se do GPartedu nebo skrz příkaz <code class="language-plaintext highlighter-rouge">lsblk</code> na označení jednotlivých oddílů</strong>) a příkazem <code class="language-plaintext highlighter-rouge">sudo mount /dev/sdc2 /mnt/archpi/boot</code> připojíme systémový oddíl.</p>
+
+<p>Dle oficiální <a href="https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3">dokumentace</a> se další proces má dělat skrz root uživatele, takže se přepneme příkazem <code class="language-plaintext highlighter-rouge">sudo su</code>.</p>
+
+<p>Příkazem <code class="language-plaintext highlighter-rouge">wget http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-armv7-latest.tar.gz</code> stáhneme archiv a příkazem <code class="language-plaintext highlighter-rouge">tar -xf ArchLinuxARM-rpi-armv7-latest.tar.gz -C /mnt/archpi/root</code> ho rozbalíme.</p>
+
+<p>Pak musíme přesunout bootovací soubory do bootovacího oddílu: <code class="language-plaintext highlighter-rouge">mv /mnt/archpi/root/boot/* boot</code> a tím jsme hotovi, stačí oddíly odpojit příkazem <code class="language-plaintext highlighter-rouge">umount /mnt/archpi/root</code> a <code class="language-plaintext highlighter-rouge">umount /mnt/archpi/boot</code>. Jakmile se příkazy dokončí, můžete SD kartu vložit do RPi a zapnout.</p>
+
+<p>Výchozí jméno a zároveň heslo uživatele je <code class="language-plaintext highlighter-rouge">alarm</code> a roota <code class="language-plaintext highlighter-rouge">root</code>. Než bude systém nastavený, doporučuji použít <code class="language-plaintext highlighter-rouge">root</code> účet.</p>
+
+<h1 id="připojení-k-wi-fi-síti">Připojení k Wi-Fi síti</h1>
+<p><em>Pokud používáte kabelové připojení, tak můžete přeskočit</em>
+Nyní se připojíme skrz terminál k Wi-Fi síti. Předpokládám, že název (SSID) sítě a heslo znáte a že zabezpečení je WPA2 Personal. Jinak si můžete prohlédnout <a href="https://wiki.archlinux.org/title/Network_configuration/Wireless">Arch Wiki</a> pro více návodů.</p>
+
+<p>Příkazem <code class="language-plaintext highlighter-rouge">iw dev</code> zjistíte název vašeho interfacu (např. já mám <code class="language-plaintext highlighter-rouge">wlan0</code>). Zapneme ho pomocí <code class="language-plaintext highlighter-rouge">ip link wlan0 up</code> (místo <code class="language-plaintext highlighter-rouge">wlan0</code> tedy použijte váš název interfacu).</p>
+
+<p>Dále se tedy připojíme k nějaké Wi-Fi síti. Nejdřív musíme vytvořit konfigurační soubor pro <code class="language-plaintext highlighter-rouge">wpa_supplicant</code>, který slouží jako <a href="https://cs.wikipedia.org/wiki/Suplikant">suplikant</a> s podporou WPA, WPA2 a WPA3.</p>
+
+<p>Pomocí příkazu <code class="language-plaintext highlighter-rouge">nano /etc/wpa_supplicant/wpa_supplicant.conf</code> vstoupíme do editace konfiguračního souboru. Do něj vložíme následující dva řádky:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ctrl_interface=/run/wpa_supplicant
+update_config=1
+</code></pre></div></div>
+
+<p>Klávesovou zkratkou <code class="language-plaintext highlighter-rouge">Ctrl+X</code>, zadáním <code class="language-plaintext highlighter-rouge">y</code> a potvrzením enterem uložíme soubor a opustíme editaci. wpa_supplicant teď můžeme spustit příkazem <code class="language-plaintext highlighter-rouge">wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf</code>.</p>
+
+<p>S běžícím wpa_supplicant můžeme použít příkaz <code class="language-plaintext highlighter-rouge">wpa_cli</code>, kde můžeme konfigurovat síť.</p>
+
+<p>Sítě zde můžete hledat příkazem <a href="https://wiki.archlinux.org/title/Wpa_supplicant#Connecting_with_wpa_cli"><code class="language-plaintext highlighter-rouge">scan</code></a>, následováný <code class="language-plaintext highlighter-rouge">scan_results</code>.</p>
+
+<p>Pro přidání sítě použijeme příkaz <code class="language-plaintext highlighter-rouge">add_network</code>. Terminál vrátí <code class="language-plaintext highlighter-rouge">0</code>, což je ID sítě, které můžeme konfigurovat. Příkazem <code class="language-plaintext highlighter-rouge">set_network 0 ssid "MYSSID"</code> nastavíme SSID (název) sítě na <code class="language-plaintext highlighter-rouge">MYSSID</code>. Příkazem <code class="language-plaintext highlighter-rouge">set_network 0 psk "passphrase"</code> nastavíme heslo na <code class="language-plaintext highlighter-rouge">passphrase</code>. Jakmile je nastaveno, můžeme povolit síť pomocí <code class="language-plaintext highlighter-rouge">enable_network 0</code>. Konfiguraci uložíme příkazem <code class="language-plaintext highlighter-rouge">save_config</code> a opustíme pomocí <code class="language-plaintext highlighter-rouge">quit</code>.</p>
+
+<p>Jelikož ale právě teď nemáme IP adresu, musíme nastavit službu DHCP (pokud ji samozřejmě váš router má). Stačí zapnout službu <code class="language-plaintext highlighter-rouge">dhcpcd</code> pomocí příkazu <code class="language-plaintext highlighter-rouge">systemctl enable dhcpcd</code>. Abychom při každém zapnutí nemuseli síť manuálně zapínat, můžeme do <code class="language-plaintext highlighter-rouge">dhcpcd</code> přidat <a href="https://wiki.archlinux.org/title/Dhcpcd#10-wpa_supplicant">hook</a>, který ji automaticky zapne, stačí použít <code class="language-plaintext highlighter-rouge">ln -s /usr/share/dhcpcd/hooks/10-wpa_supplicant /usr/lib/dhcpcd/dhcpcd-hooks/</code>.</p>
+
+<p>V tomto stádiu doporučuji restartovat příkazem <code class="language-plaintext highlighter-rouge">reboot</code>.</p>
+
+<h1 id="nastavujeme-správce-balíků">Nastavujeme správce balíků</h1>
+<p>Aktuálně bychom měli mít funkční síť, nicméně je potřeba pár dalších příkazů pokud chceme používat <code class="language-plaintext highlighter-rouge">pacman</code> správce balíků.</p>
+
+<p>Nejdřív musíme vytvořit klíčenku příkazem <code class="language-plaintext highlighter-rouge">pacman-key --init</code>, poté přidáme klíče Arch ARM repozitářů příkazem <code class="language-plaintext highlighter-rouge">pacman-key --populate archlinuxarm</code>. Teď můžete příkazem <code class="language-plaintext highlighter-rouge">pacman -Sy</code> repozitáře synchronizovat.</p>
+
+<p>Jako první balík bychom měli stáhnout <a href="https://wiki.archlinux.org/title/sudo"><code class="language-plaintext highlighter-rouge">sudo</code></a>, abychom nemuseli používat <code class="language-plaintext highlighter-rouge">root</code> uživatele pro všechno nastavování. Nainstalujeme ho příkazem <code class="language-plaintext highlighter-rouge">pacman -S sudo</code>. Dále příkazem <code class="language-plaintext highlighter-rouge">nano /etc/sudoers</code> upravíme konfiguraci. Najdeme následující řádky (<code class="language-plaintext highlighter-rouge">Ctrl+W</code> pro hledání):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Uncomment to allow members of group wheel to execute any command
+#%wheel ALL=(ALL:ALL) ALL
+</code></pre></div></div>
+<p>a odstraníme mřížku před <code class="language-plaintext highlighter-rouge">%</code> pro odstranění komentáře. Tím umožníme uživatelům v uživatelské skupině <code class="language-plaintext highlighter-rouge">wheel</code> používat příkaz <code class="language-plaintext highlighter-rouge">sudo</code>.</p>
+
+<p>Nyní přidáme uživatele <code class="language-plaintext highlighter-rouge">alarm</code> do skupiny <code class="language-plaintext highlighter-rouge">wheel</code> příkazem <code class="language-plaintext highlighter-rouge">gpasswd -a alarm wheel</code>. A teď už můžeme používat uživatele <code class="language-plaintext highlighter-rouge">alarm</code> pro různé administrativní operace místo roota.</p>
+
+<h1 id="nastavení-ssh-přístupu">Nastavení SSH přístupu</h1>
+<p>Možná vás nebaví zapojovat RPi do monitoru nebo u něj klapat věci do klávesnice v terminálu nebo jen chcete vzdálený přístup. SSH lze povolit skrz OpenSSH, které je na Archu předinstalované. Stačí povolit službu pomocí <code class="language-plaintext highlighter-rouge">systemctl enable sshd</code>. Pro nějakou pokročilou konfiguraci si prohlédněte <a href="https://wiki.archlinux.org/title/OpenSSH#Server_usage">Arch Wiki</a>.</p>
+
+<p>Nyní se stačí připojit skrz nějaký SSH klient na vaše zařízení (pokud neznáte IP, podívejte se skrz příkaz <code class="language-plaintext highlighter-rouge">ip a</code>), třeba skrz <code class="language-plaintext highlighter-rouge">ssh alarm@vase.ip.adresa</code>.</p>
+
+<h1 id="https-problémy">HTTPS problémy</h1>
+<p>Pokud máte problémy s SSL nebo komunikací se zabezpečenými servery, zkuste nainstalovat balík <code class="language-plaintext highlighter-rouge">ca-certificates</code> a nastavit systémový čas skrz <code class="language-plaintext highlighter-rouge">timedatectl set-time "2022-10-29 15:00:00</code> (samozřejmě vaše datum).</p>
+
+<h1 id="závěr">Závěr</h1>
+
+<p><img src="/assets/images/rpi-arch/05.png" alt="Arch neofetch"></p>
+
+<p>Instalace je opravdu prostý a snadný proces (i když jsem ho sám dělal asi 5x než mi to nabootovalo), takže určitě zkoušejte a zkoušejte.</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/bezpe%C4%8D%C3%AD/2022/07/19/nordvpn.html" title="NordVPN - Jste opravdu v takovém nebezpečí?">NordVPN - Jste opravdu v takovém...</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/programov%C3%A1n%C3%AD/2022/05/22/automatizace.html" title="">Automatizace, automatizace, automatizace</a></li>
+<li><a class="post-link" href="/tutori%C3%A1l/2022/10/22/rpi-arch.html" title="">Instalujeme Arch Linux ARM na Raspberry Pi 3</a></li>
+<li><a class="post-link" href="/bezpe%C4%8D%C3%AD/2022/07/19/nordvpn.html" title="">NordVPN - Jste opravdu v takovém nebezpečí?</a></li>
+<li><a class="post-link" href="/vychyt%C3%A1vky/2022/05/31/codespaces.html" title="">GitHub Codespaces aneb VS Code na VPS</a></li>
+</ul>
+    </div>
+<div class="post-comments">  <div id="gitment_thread" class="giscus"></div>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js"></script>
+  <script src="https://giscus.app/client.js" data-repo="hernikplays/blog" data-repo-id="R_kgDOHr2B6w" data-category="General" data-category-id="DIC_kwDOHr2B684CSIhA" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="transparent_dark" data-lang="en" data-loading="lazy" crossorigin="anonymous" async>
+</script>
+</div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --></section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Copyright © 2021-2022 hernikplays</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="https://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div><a rel="me" href="https://social.linux.pizza/@hernik">Mastodon</a></div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
